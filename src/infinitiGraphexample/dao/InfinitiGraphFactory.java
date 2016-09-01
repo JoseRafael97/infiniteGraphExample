@@ -13,7 +13,7 @@ import com.infinitegraph.StorageException;
 public class InfinitiGraphFactory {
 	
 	private static final String GRAFO_DBNOME = "chat" ;
-	private static final String PATH_CONF_PROPRIEDADES = "configuracoes/confLocalDosDados.properties";
+	private static final String PATH_CONF_PROPRIEDADES = "config/confLocalDosDados.properties";
 
 	
 	/**
@@ -32,9 +32,6 @@ public class InfinitiGraphFactory {
 	 * @throws StorageException 
 	 */
 	public static GraphDatabase getGraph() throws StorageException, ConfigurationException{
-		if(GraphFactory.open(GRAFO_DBNOME, PATH_CONF_PROPRIEDADES) == null){
-			criarDataBase();
-		}
 		return GraphFactory.open(GRAFO_DBNOME, PATH_CONF_PROPRIEDADES);
 	}
 

@@ -1,0 +1,30 @@
+apply plugin: "java"
+apply plugin: "application"
+
+def igHome = project.hasProperty('igHome') ? project.igHome : '../..'
+
+dependencies {
+    compile files("$igHome/lib/InfiniteGraph.jar")
+    runtime files("$igHome/lib/slf4j-simple-1.7.7.jar")
+}
+
+// java source settings
+sourceCompatibility = '1.6'
+sourceSets.main.java.srcDirs = ['src']
+
+// run
+mainClassName = "infinitiGraphexample.MainApp.java"
+
+// create the DB
+task runCreateDb(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main "infinitiGraphexample.MainApp.java"
+}
+
+// cleanup Db using deleteFd
+task cleanDb(type:Exec){
+    workingDir = 'data'
+    def cmdPrefix = System.getProperty("os.name").toLowerCase().contains("windows") ? ['cmd', '/c'] : []
+    args = ['objy','deleteFd', '-bootfile', 'WebGroupSample.boot']
+    commandLine = cmdPrefix + args 
+}

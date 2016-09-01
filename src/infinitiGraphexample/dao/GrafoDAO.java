@@ -1,9 +1,14 @@
 package infinitiGraphexample.dao;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.infinitegraph.AccessMode;
 import com.infinitegraph.ConfigurationException;
 import com.infinitegraph.EdgeKind;
 import com.infinitegraph.GraphDatabase;
+import com.infinitegraph.Query;
 import com.infinitegraph.StorageException;
 import com.infinitegraph.Transaction;
 
@@ -64,7 +69,6 @@ public class GrafoDAO {
 			grafo.close();
 		}
 	}
-	
 
 	/**
 	 * Cria um ligação entre p1 e p2 sendo p1 para p2 de forma unidericional
@@ -79,9 +83,11 @@ public class GrafoDAO {
 			throws StorageException, ConfigurationException {
 		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
 	}
-	
+
 	/**
-	 * Cria uma conexao entre p1 e p2 com aresta Mensagem privada de forma biderecional
+	 * Cria uma conexao entre p1 e p2 com aresta Mensagem privada de forma
+	 * biderecional
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param msg
@@ -89,12 +95,14 @@ public class GrafoDAO {
 	 * @throws ConfigurationException
 	 */
 	public void adicionarConexaoMensagemBidericional(Pessoa p1, Pessoa p2, MensagemPrivada msg)
-			throws StorageException, ConfigurationException{
+			throws StorageException, ConfigurationException {
 		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
 	}
 
 	/**
-	 * Método utilizado pelo método de criar conexao unidirecional e bidirecional 
+	 * Método utilizado pelo método de criar conexao unidirecional e
+	 * bidirecional
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param msg
@@ -120,20 +128,21 @@ public class GrafoDAO {
 			grafo.close();
 		}
 	}
-	
-	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat) throws StorageException, ConfigurationException {
+
+	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
+			throws StorageException, ConfigurationException {
 		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
-	
+
 	}
-	
-	
-	public void adicionarConexaoCharBiderecional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat) throws StorageException, ConfigurationException {
+
+	public void adicionarConexaoCharBiderecional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
+			throws StorageException, ConfigurationException {
 		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
 	}
-	
+
 	private void adicionarConexaoChat(Pessoa p1, Pessoa p2, ChatDeBatePapo chat, AccessMode modoAcesso,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
-		
+
 		grafo = InfinitiGraphFactory.getGraph();
 		Transaction tx = grafo.beginTransaction(modoAcesso);
 
@@ -148,6 +157,33 @@ public class GrafoDAO {
 			tx.complete();
 			grafo.close();
 		}
+	}
+
+	public List<Pessoa> buscarTodos() throws StorageException, ConfigurationException {
+
+		grafo = InfinitiGraphFactory.getGraph();
+		
+		Transaction tx = grafo.beginTransaction(AccessMode.READ_WRITE);
+
+		
+		Query<Pessoa> memberQuery = grafo.createQuery(Pessoa.class.getName(), "name=='Rafael'");
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		
+		try {
+			Iterator<Pessoa> memberItr = memberQuery.execute();
+			while (memberItr.hasNext()) {
+				Pessoa myMember = memberItr.next();
+				pessoas.add(myMember);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
+		} finally {
+			tx.complete();
+			grafo.close();
+		}
+		return pessoas;
 	}
 
 }
