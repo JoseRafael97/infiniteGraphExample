@@ -7,6 +7,7 @@ import com.infinitegraph.GraphDatabase;
 import com.infinitegraph.StorageException;
 import com.infinitegraph.Transaction;
 
+import infinitiGraphexample.entidades.ChatDeBatePapo;
 import infinitiGraphexample.entidades.MensagemPrivada;
 import infinitiGraphexample.entidades.Pessoa;
 
@@ -63,6 +64,7 @@ public class GrafoDAO {
 			grafo.close();
 		}
 	}
+	
 
 	/**
 	 * Cria um ligação entre p1 e p2 sendo p1 para p2 de forma unidericional
@@ -91,6 +93,16 @@ public class GrafoDAO {
 		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
 	}
 
+	/**
+	 * Método utilizado pelo método de criar conexao unidirecional e bidirecional 
+	 * @param p1
+	 * @param p2
+	 * @param msg
+	 * @param modoAcesso
+	 * @param tipoRelacao
+	 * @throws StorageException
+	 * @throws ConfigurationException
+	 */
 	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg, AccessMode modoAcesso,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
 		grafo = InfinitiGraphFactory.getGraph();
@@ -98,6 +110,35 @@ public class GrafoDAO {
 
 		try {
 			p1.addEdge(msg, p2, tipoRelacao, (short) 0);
+			tx.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
+		} finally {
+			tx.complete();
+			grafo.close();
+		}
+	}
+	
+	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat) throws StorageException, ConfigurationException {
+		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
+	
+	}
+	
+	
+	public void adicionarConexaoCharBiderecional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat) throws StorageException, ConfigurationException {
+		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
+	}
+	
+	private void adicionarConexaoChat(Pessoa p1, Pessoa p2, ChatDeBatePapo chat, AccessMode modoAcesso,
+			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
+		
+		grafo = InfinitiGraphFactory.getGraph();
+		Transaction tx = grafo.beginTransaction(modoAcesso);
+
+		try {
+			p1.addEdge(chat, p2, tipoRelacao, (short) 0);
 			tx.commit();
 
 		} catch (Exception e) {
