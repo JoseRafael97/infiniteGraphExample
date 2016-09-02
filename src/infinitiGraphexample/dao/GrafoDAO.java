@@ -11,6 +11,11 @@ import com.infinitegraph.GraphDatabase;
 import com.infinitegraph.Query;
 import com.infinitegraph.StorageException;
 import com.infinitegraph.Transaction;
+import com.infinitegraph.Vertex;
+import com.infinitegraph.navigation.Guide;
+import com.infinitegraph.navigation.Navigator;
+import com.infinitegraph.navigation.Qualifier;
+import com.infinitegraph.navigation.handlers.PrintResultHandler;
 
 import infinitiGraphexample.entidades.ChatDeBatePapo;
 import infinitiGraphexample.entidades.MensagemPrivada;
@@ -20,10 +25,8 @@ public class GrafoDAO {
 
 	private GraphDatabase grafo;
 	private Transaction tx;
-	
 
-	
-	public void iniciarTransacao() throws StorageException, ConfigurationException{
+	public void iniciarTransacao() throws StorageException, ConfigurationException {
 		try {
 			InfinitiGraphFactory.criarDataBase();
 			grafo = InfinitiGraphFactory.getGraph();
@@ -31,14 +34,13 @@ public class GrafoDAO {
 		} catch (StorageException e) {
 			InfinitiGraphFactory.criarDataBase();
 		} catch (ConfigurationException e) {
-			
+
 			e.printStackTrace();
 		}
-		
+
 		this.tx = grafo.beginTransaction(AccessMode.READ_WRITE);
 		System.out.println("____ TRANSAÇÂO INICIADA ___");
 	}
-
 
 	/**
 	 * Adiciona no grafo um novo nó
@@ -51,11 +53,11 @@ public class GrafoDAO {
 
 		try {
 			grafo.addVertex(pessoa);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.tx.rollback();
-		} 
+		}
 
 	}
 
@@ -73,7 +75,7 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} 
+		}
 	}
 
 	/**
@@ -119,14 +121,14 @@ public class GrafoDAO {
 	 */
 	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg, AccessMode modoAcesso,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
-		
+
 		try {
 			p1.addEdge(msg, p2, tipoRelacao, (short) 0);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} 
+		}
 	}
 
 	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
@@ -149,29 +151,52 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} 
+		}
 	}
 
 	public Pessoa buscarPorNome(String nome) throws StorageException, ConfigurationException {
 
-		Query<Pessoa> query = grafo.createQuery(Pessoa.class.getName(), "nome='"+nome+"'");
+		Query<Pessoa> query = grafo.createQuery(Pessoa.class.getName(), "nome='" + nome + "'");
 		Pessoa pessoa = null;
-		
+
 		try {
 			Iterator<Pessoa> memberItr = query.execute();
-		
+
 			while (memberItr.hasNext()) {
 				pessoa = memberItr.next();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} 
+		}
 		return pessoa;
 	}
 	
-	
-	public void fecharConexao(){
+	public  List<Pessoa> buscarTodos(){
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+
+		try {
+			Iterator<Vertex> memberItr = grafo.getVertices().iterator();
+
+			while (memberItr.hasNext()) {
+				pessoas.add((Pessoa) memberItr.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
+		}
+		return pessoas;
+	}
+
+	public void buscarPessoasLigadasDiretamente(Pessoa pessoa) {
+		PrintResultHandler printResults = new PrintResultHandler();
+
+		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY,
+				null, printResults);
+		myNavigator.start();
+	}
+
+	public void fecharConexao() {
 		tx.commit();
 		tx.complete();
 		grafo.close();
