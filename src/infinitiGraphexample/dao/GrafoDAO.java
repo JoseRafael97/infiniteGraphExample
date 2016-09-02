@@ -20,20 +20,25 @@ public class GrafoDAO {
 
 	private GraphDatabase grafo;
 	private Transaction tx;
+	
 
-	public GrafoDAO() {
+	
+	public void iniciarTransacao() throws StorageException, ConfigurationException{
 		try {
+			InfinitiGraphFactory.criarDataBase();
 			grafo = InfinitiGraphFactory.getGraph();
-			tx = grafo.beginTransaction(AccessMode.READ_WRITE);
+			System.out.println("____ GRAFO CRIADO ___");
 		} catch (StorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			InfinitiGraphFactory.criarDataBase();
 		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-
+		
+		this.tx = grafo.beginTransaction(AccessMode.READ_WRITE);
+		System.out.println("____ TRANSAÇÂO INICIADA ___");
 	}
+
 
 	/**
 	 * Adiciona no grafo um novo nó
@@ -46,12 +51,11 @@ public class GrafoDAO {
 
 		try {
 			grafo.addVertex(pessoa);
-			tx.commit();
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-			tx.rollback();
-		}
+			this.tx.rollback();
+		} 
 
 	}
 
@@ -65,12 +69,11 @@ public class GrafoDAO {
 	public void colocarNoComoRaiz(Pessoa pessoa) throws StorageException, ConfigurationException {
 		try {
 			grafo.nameVertex(pessoa.getNome(), pessoa);
-			tx.commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		}
+		} 
 	}
 
 	/**
@@ -84,7 +87,7 @@ public class GrafoDAO {
 	 */
 	public void adicionarConexaoMensagemUnidericional(Pessoa p1, Pessoa p2, MensagemPrivada msg)
 			throws StorageException, ConfigurationException {
-		adicionarConexaoMensagem(p1, p2, msg, EdgeKind.OUTGOING);
+		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
 	}
 
 	/**
@@ -99,7 +102,7 @@ public class GrafoDAO {
 	 */
 	public void adicionarConexaoMensagemBidericional(Pessoa p1, Pessoa p2, MensagemPrivada msg)
 			throws StorageException, ConfigurationException {
-		adicionarConexaoMensagem(p1, p2, msg, EdgeKind.BIDIRECTIONAL);
+		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
 	}
 
 	/**
@@ -114,12 +117,11 @@ public class GrafoDAO {
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
-	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg ,
+	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg, AccessMode modoAcesso,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
 		
 		try {
 			p1.addEdge(msg, p2, tipoRelacao, (short) 0);
-			tx.commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -141,12 +143,8 @@ public class GrafoDAO {
 	private void adicionarConexaoChat(Pessoa p1, Pessoa p2, ChatDeBatePapo chat, AccessMode modoAcesso,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
 
-		grafo = InfinitiGraphFactory.getGraph();
-		tx = grafo.beginTransaction(modoAcesso);
-
 		try {
 			p1.addEdge(chat, p2, tipoRelacao, (short) 0);
-			tx.commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,30 +152,27 @@ public class GrafoDAO {
 		} 
 	}
 
-	public List<Pessoa> buscarTodos() throws StorageException, ConfigurationException {
+	public Pessoa buscarPorNome(String nome) throws StorageException, ConfigurationException {
 
-		grafo = InfinitiGraphFactory.getGraph();
-
-		Transaction tx = grafo.beginTransaction(AccessMode.READ_WRITE);
-
-		Query<Pessoa> memberQuery = grafo.createQuery(Pessoa.class.getName(), "name=='Rafael'");
-		List<Pessoa> pessoas = new ArrayList<Pessoa>();
-
+		Query<Pessoa> query = grafo.createQuery(Pessoa.class.getName(), "nome='"+nome+"'");
+		Pessoa pessoa = null;
+		
 		try {
-			Iterator<Pessoa> memberItr = memberQuery.execute();
+			Iterator<Pessoa> memberItr = query.execute();
+		
 			while (memberItr.hasNext()) {
-				Pessoa myMember = memberItr.next();
-				pessoas.add(myMember);
-
+				pessoa = memberItr.next();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
 		} 
-		return pessoas;
+		return pessoa;
 	}
-
-	public void fecharConnection() {
+	
+	
+	public void fecharConexao(){
+		tx.commit();
 		tx.complete();
 		grafo.close();
 	}

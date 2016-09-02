@@ -18,6 +18,7 @@ public class InfinitiGraphFactory {
 	
 	/**
 	 * Método que cria um novo grafo de acordo com as constantes de nome e path de configuração.
+	 * @return 
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
@@ -33,6 +34,11 @@ public class InfinitiGraphFactory {
 	 */
 	public static GraphDatabase getGraph() throws StorageException, ConfigurationException{
 		return GraphFactory.open(GRAFO_DBNOME, PATH_CONF_PROPRIEDADES);
+	}
+	
+	
+	public static void deleteGrafo() throws StorageException, ConfigurationException{
+		 GraphFactory.delete(GRAFO_DBNOME,PATH_CONF_PROPRIEDADES);
 	}
 
 }

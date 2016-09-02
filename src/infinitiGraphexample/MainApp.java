@@ -2,28 +2,20 @@ package infinitiGraphexample;
 
 import java.util.Calendar;
 
-import com.infinitegraph.AccessMode;
 import com.infinitegraph.ConfigurationException;
-import com.infinitegraph.GraphDatabase;
-import com.infinitegraph.GraphFactory;
 import com.infinitegraph.StorageException;
-import com.infinitegraph.Transaction;
 
 import infinitiGraphexample.dao.GrafoDAO;
 import infinitiGraphexample.dao.InfinitiGraphFactory;
 import infinitiGraphexample.entidades.Membro;
 import infinitiGraphexample.entidades.MensagemPrivada;
-import infinitiGraphexample.entidades.Pessoa;
 
 public class MainApp {
 
 	public static void main(String[] args) throws StorageException, ConfigurationException {
 
-		GrafoDAO dao = new GrafoDAO();
-
-		GraphFactory.delete("chat", "config/confLocalDosDados.properties");
-
-		GraphFactory.create("chat", "config/confLocalDosDados.properties");
+		InfinitiGraphFactory.deleteGrafo();
+		// InfinitiGraphFactory.criarDataBase();
 
 		Membro me1 = new Membro("Rafael", "Masculino", 16, 16, "ralf");
 
@@ -33,31 +25,62 @@ public class MainApp {
 
 		Membro me4 = new Membro("Rafael4", "Masculino", 16, 16, "ralf4");
 
-		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá COnseguiu rodar o InfiniteGraph?", "Não",
+		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "Não",
+				Calendar.getInstance());
+		
+		MensagemPrivada mensagemPrivada2 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "SIM",
+				Calendar.getInstance());
+		
+		MensagemPrivada mensagemPrivad3 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "Não, é uma merda!",
 				Calendar.getInstance());
 
-		try {
-			
 
+		try {
+
+			GrafoDAO dao = new GrafoDAO();
+
+			dao.iniciarTransacao();
+			
 			dao.adicionaPessoa(me1);
 
+			System.out.println("CRIADO PESSOA 1");
+			
 			dao.adicionaPessoa(me2);
+			
+			System.out.println("CRIADO PESSOA 2");
 
 			dao.adicionaPessoa(me3);
-
+			
+			System.out.println("CRIADO PESSOA 3");
+			
 			dao.adicionaPessoa(me4);
 			
-			dao.adicionarConexaoMensagemUnidericional((Pessoa)me1, (Pessoa)me2, mensagemPrivada);
+			System.out.println("CRIADO PESSOA 4");
+			
+			dao.adicionarConexaoMensagemUnidericional(me1, me2, mensagemPrivada);
+			
+			dao.adicionarConexaoMensagemUnidericional(me1, me3, mensagemPrivad3);
+
+			dao.adicionarConexaoMensagemBidericional(me1, me4, mensagemPrivada2);
 
 
-			// System.out.println(dao.buscarTodos());
-
+			
+			System.out.println("ADICIONADO CONEXAO DE PESSOA 1 com PESSOA2 E ADICIONADO UMA ARESTA");
+			
+			dao.colocarNoComoRaiz(me1);
+			
+			System.out.println("COLOCADO PESSOA 1 COMO NÓ ROOT");
+			
+			System.out.println(dao.buscarTodos());
+			
+			dao.fecharConexao();
+		
 		} catch (StorageException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		} catch (ConfigurationException e) {
-			InfinitiGraphFactory.criarDataBase();
 			e.printStackTrace();
+
 		}
 
 	}
