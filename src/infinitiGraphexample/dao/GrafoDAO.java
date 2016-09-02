@@ -19,6 +19,21 @@ import infinitiGraphexample.entidades.Pessoa;
 public class GrafoDAO {
 
 	private GraphDatabase grafo;
+	private Transaction tx;
+
+	public GrafoDAO() {
+		try {
+			grafo = InfinitiGraphFactory.getGraph();
+			tx = grafo.beginTransaction(AccessMode.READ_WRITE);
+		} catch (StorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	/**
 	 * Adiciona no grafo um novo nó
@@ -29,9 +44,6 @@ public class GrafoDAO {
 	 */
 	public void adicionaPessoa(Pessoa pessoa) throws StorageException, ConfigurationException {
 
-		grafo = InfinitiGraphFactory.getGraph();
-		Transaction tx = grafo.beginTransaction(AccessMode.READ_WRITE);
-
 		try {
 			grafo.addVertex(pessoa);
 			tx.commit();
@@ -39,9 +51,6 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} finally {
-			tx.complete();
-			grafo.close();
 		}
 
 	}
@@ -54,9 +63,6 @@ public class GrafoDAO {
 	 * @throws StorageException
 	 */
 	public void colocarNoComoRaiz(Pessoa pessoa) throws StorageException, ConfigurationException {
-		grafo = InfinitiGraphFactory.getGraph();
-		Transaction tx = grafo.beginTransaction(AccessMode.READ_WRITE);
-
 		try {
 			grafo.nameVertex(pessoa.getNome(), pessoa);
 			tx.commit();
@@ -64,9 +70,6 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} finally {
-			tx.complete();
-			grafo.close();
 		}
 	}
 
@@ -81,7 +84,7 @@ public class GrafoDAO {
 	 */
 	public void adicionarConexaoMensagemUnidericional(Pessoa p1, Pessoa p2, MensagemPrivada msg)
 			throws StorageException, ConfigurationException {
-		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
+		adicionarConexaoMensagem(p1, p2, msg, EdgeKind.OUTGOING);
 	}
 
 	/**
@@ -96,7 +99,7 @@ public class GrafoDAO {
 	 */
 	public void adicionarConexaoMensagemBidericional(Pessoa p1, Pessoa p2, MensagemPrivada msg)
 			throws StorageException, ConfigurationException {
-		adicionarConexaoMensagem(p1, p2, msg, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
+		adicionarConexaoMensagem(p1, p2, msg, EdgeKind.BIDIRECTIONAL);
 	}
 
 	/**
@@ -111,11 +114,9 @@ public class GrafoDAO {
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
-	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg, AccessMode modoAcesso,
+	private void adicionarConexaoMensagem(Pessoa p1, Pessoa p2, MensagemPrivada msg ,
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
-		grafo = InfinitiGraphFactory.getGraph();
-		Transaction tx = grafo.beginTransaction(modoAcesso);
-
+		
 		try {
 			p1.addEdge(msg, p2, tipoRelacao, (short) 0);
 			tx.commit();
@@ -123,10 +124,7 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} finally {
-			tx.complete();
-			grafo.close();
-		}
+		} 
 	}
 
 	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
@@ -144,7 +142,7 @@ public class GrafoDAO {
 			EdgeKind tipoRelacao) throws StorageException, ConfigurationException {
 
 		grafo = InfinitiGraphFactory.getGraph();
-		Transaction tx = grafo.beginTransaction(modoAcesso);
+		tx = grafo.beginTransaction(modoAcesso);
 
 		try {
 			p1.addEdge(chat, p2, tipoRelacao, (short) 0);
@@ -153,22 +151,18 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} finally {
-			tx.complete();
-			grafo.close();
-		}
+		} 
 	}
 
 	public List<Pessoa> buscarTodos() throws StorageException, ConfigurationException {
 
 		grafo = InfinitiGraphFactory.getGraph();
-		
+
 		Transaction tx = grafo.beginTransaction(AccessMode.READ_WRITE);
 
-		
 		Query<Pessoa> memberQuery = grafo.createQuery(Pessoa.class.getName(), "name=='Rafael'");
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
-		
+
 		try {
 			Iterator<Pessoa> memberItr = memberQuery.execute();
 			while (memberItr.hasNext()) {
@@ -179,11 +173,13 @@ public class GrafoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			tx.rollback();
-		} finally {
-			tx.complete();
-			grafo.close();
-		}
+		} 
 		return pessoas;
+	}
+
+	public void fecharConnection() {
+		tx.complete();
+		grafo.close();
 	}
 
 }
