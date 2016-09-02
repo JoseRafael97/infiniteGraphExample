@@ -71,7 +71,7 @@ public class MainApp {
 			
 			System.out.println("COLOCADO PESSOA 1 COMO NÓ ROOT");
 			
-			System.out.println(dao.buscarTodos());
+			System.out.println(dao.buscarPorNome(me2.getNome()));
 			
 			dao.fecharConexao();
 		
