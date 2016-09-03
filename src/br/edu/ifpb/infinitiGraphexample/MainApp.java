@@ -1,20 +1,15 @@
-package infinitiGraphexample;
+package br.edu.ifpb.infinitiGraphexample;
 
 import java.util.Calendar;
 
 import com.infinitegraph.ConfigurationException;
 import com.infinitegraph.StorageException;
-import com.infinitegraph.navigation.Guide;
-import com.infinitegraph.navigation.Navigator;
-import com.infinitegraph.navigation.Qualifier;
-import com.infinitegraph.navigation.handlers.PrintResultHandler;
-import com.infinitegraph.navigation.qualifiers.VertexPredicate;
-
 import infinitiGraphexample.dao.GrafoDAO;
 import infinitiGraphexample.dao.InfinitiGraphFactory;
 import infinitiGraphexample.entidades.Membro;
 import infinitiGraphexample.entidades.MensagemPrivada;
-import infinitiGraphexample.entidades.Pessoa;
+
+
 public class MainApp {
 
 	public static void main(String[] args) throws StorageException, ConfigurationException {
