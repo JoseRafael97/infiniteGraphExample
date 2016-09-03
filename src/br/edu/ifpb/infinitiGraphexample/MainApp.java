@@ -77,6 +77,8 @@ public class MainApp {
 			dao.adicionarConexaoMensagemBidericional(me4, me5, mensagemPrivada4);
 			
 			//dao.adicionarConexaoMensagemBidericional(me3, me5, mensagemPrivada);
+			//Exclui qualque instacia da classe abaixo do gráfico visual
+//			myGraphView.excludeClass(InstantChat.class);
 
 			
 			System.out.println("ADICIONADO CONEXAO DE PESSOA 1 com PESSOA2 E ADICIONADO UMA ARESTA");
@@ -91,7 +93,7 @@ public class MainApp {
 			
 		//	VertexPredicate myVertexPred = new VertexPredicate(InfinitiGraphFactory.getGraph().getTypeId(Pessoa.class.getName()), "name=='Rafael4'");
 			
-			dao.buscarPessoasLigadasDiretamente(me1);
+			dao.buscarPessoasLigadasDiretamenteJSON(me1);
 			
 			System.out.println(dao.buscarTodos());
 			

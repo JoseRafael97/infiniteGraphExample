@@ -1,5 +1,7 @@
 package infinitiGraphexample.dao;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +17,7 @@ import com.infinitegraph.Vertex;
 import com.infinitegraph.navigation.Guide;
 import com.infinitegraph.navigation.Navigator;
 import com.infinitegraph.navigation.Qualifier;
+import com.infinitegraph.navigation.handlers.JSONOutputResultHandler;
 import com.infinitegraph.navigation.handlers.PrintResultHandler;
 import com.infinitegraph.navigation.qualifiers.VertexPredicate;
 
@@ -28,7 +31,9 @@ public class GrafoDAO {
 	private Transaction tx;
 
 	/**
-	 * Método que criar uma transação e uma instância do GRAFO, para serem usada nos métodos.
+	 * Método que criar uma transação e uma instância do GRAFO, para serem usada
+	 * nos métodos.
+	 * 
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
@@ -85,8 +90,11 @@ public class GrafoDAO {
 	}
 
 	/**
-	 * Adiciona Uma conexão para Pessoa 1 de forma unidericional com uma mensagem, considerando da pessoa 1 para p2.
-	 * Para funcionamento correto do método, ele deve ser executado na mesma transação do adicionamento dos nos
+	 * Adiciona Uma conexão para Pessoa 1 de forma unidericional com uma
+	 * mensagem, considerando da pessoa 1 para p2. Para funcionamento correto do
+	 * método, ele deve ser executado na mesma transação do adicionamento dos
+	 * nos
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param chat
@@ -99,8 +107,10 @@ public class GrafoDAO {
 	}
 
 	/**
-	 * Adiciona Uma conexão para Pessoa 1 de forma Biderecional adicionando a mensagem trocada por eles.
-	 * Para funcionamento correto do método, ele deve ser executado na mesma transação do adicionamento dos nos
+	 * Adiciona Uma conexão para Pessoa 1 de forma Biderecional adicionando a
+	 * mensagem trocada por eles. Para funcionamento correto do método, ele deve
+	 * ser executado na mesma transação do adicionamento dos nos
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param chat
@@ -136,10 +146,12 @@ public class GrafoDAO {
 		}
 	}
 
-	
 	/**
-	 * Adiciona Uma conexão para Pessoa 1 de forma unidericional com instacia do chat, considerando da pessoa 1 para p2.
-	 * Para funcionamento correto do método, ele deve ser executado na mesma transação do adicionamento dos nos
+	 * Adiciona Uma conexão para Pessoa 1 de forma unidericional com instacia do
+	 * chat, considerando da pessoa 1 para p2. Para funcionamento correto do
+	 * método, ele deve ser executado na mesma transação do adicionamento dos
+	 * nos
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param chat
@@ -151,10 +163,12 @@ public class GrafoDAO {
 		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
 
 	}
-	
+
 	/**
-	 * Adiciona Uma conexão para Pessoa 1 de forma Biderecional com uma instacia do chat.
-	 * Para funcionamento correto do método, ele deve ser executado na mesma transação do adicionamento dos nos
+	 * Adiciona Uma conexão para Pessoa 1 de forma Biderecional com uma instacia
+	 * do chat. Para funcionamento correto do método, ele deve ser executado na
+	 * mesma transação do adicionamento dos nos
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param chat
@@ -167,7 +181,9 @@ public class GrafoDAO {
 	}
 
 	/**
-	 * Adiciona uma conexão de uma pessoa 1 para outra 2 adicionando a aresta com instância do chat.
+	 * Adiciona uma conexão de uma pessoa 1 para outra 2 adicionando a aresta
+	 * com instância do chat.
+	 * 
 	 * @param p1
 	 * @param p2
 	 * @param chat
@@ -189,7 +205,8 @@ public class GrafoDAO {
 	}
 
 	/**
-	 * Busca uma pessoa com nome passado 
+	 * Busca uma pessoa com nome passado
+	 * 
 	 * @param nome
 	 * @return
 	 * @throws StorageException
@@ -212,13 +229,12 @@ public class GrafoDAO {
 		}
 		return pessoa;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public  List<Pessoa> buscarTodos(){
+	public List<Pessoa> buscarTodos() {
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
 
 		try {
@@ -233,26 +249,57 @@ public class GrafoDAO {
 		}
 		return pessoas;
 	}
-	
-	
+
 	/**
+	 * Busca pessoas ligada a pessoas passada
 	 * 
 	 * @param pessoa
 	 */
-	public void buscarPessoasLigadasDiretamente(Pessoa pessoa) {
+	public void buscarPessoasLigadasDiretamenteLogger(Pessoa pessoa) {
 		PrintResultHandler printResults = new PrintResultHandler();
 
 		VertexPredicate myVertexPred = new VertexPredicate(grafo.getTypeId(Pessoa.class.getName()), "nome=~'Rafael3'");
 
-		
-		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, myVertexPred,
-				null, printResults);
+		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, myVertexPred, null,
+				printResults);
+
 		myNavigator.start();
+
+	}
+
+	/**
+	 * Busca pessoas ligada a pessoas passada 
+	 * @param pessoa
+	 * @throws FileNotFoundException 
+	 */
+	public void buscarPessoasLigadasDiretamenteJSON(Pessoa pessoa) {
+		FileOutputStream stream = null;
+		try 
+		{  
+		   stream = new FileOutputStream("consultas/json.txt");  
+		   JSONOutputResultHandler json = new JSONOutputResultHandler(stream); 
+
+		   Navigator navigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY, null, json);
+		   navigator.start();
+		
+		}catch(FileNotFoundException e){
+			e.printStackTrace();
+		}finally{
+		   if (stream != null)
+		   {
+		       try
+		       {
+		           stream.close();
+		       }
+		       catch(Exception e){}
+		   } 
+		        
+		}
 	
 	}
 
 	/**
-	 * 
+	 * Fecha a trasação e faz commit e fecha o banco grafo
 	 */
 	public void fecharConexao() {
 		tx.commit();
