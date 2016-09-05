@@ -1,4 +1,4 @@
-package infinitiGraphexample.dao;
+package br.edu.ifpb.infinitiGraphexample.dao;
 
 import com.infinitegraph.ConfigurationException;
 import com.infinitegraph.GraphDatabase;

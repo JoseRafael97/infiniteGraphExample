@@ -1,4 +1,4 @@
-package infinitiGraphexample.exception;
+package br.edu.ifpb.infinitiGraphexample.exception;
 
 public class PersistenciaException extends Exception{
 

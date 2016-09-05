@@ -1,4 +1,4 @@
-package infinitiGraphexample.entidades;
+package br.edu.ifpb.infinitiGraphexample.entidades;
 
 
 import java.util.Calendar;

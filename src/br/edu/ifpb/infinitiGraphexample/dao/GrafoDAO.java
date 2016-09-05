@@ -1,4 +1,4 @@
-package infinitiGraphexample.dao;
+package br.edu.ifpb.infinitiGraphexample.dao;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,9 +21,9 @@ import com.infinitegraph.navigation.handlers.JSONOutputResultHandler;
 import com.infinitegraph.navigation.handlers.PrintResultHandler;
 import com.infinitegraph.navigation.qualifiers.VertexPredicate;
 
-import infinitiGraphexample.entidades.ChatDeBatePapo;
-import infinitiGraphexample.entidades.MensagemPrivada;
-import infinitiGraphexample.entidades.Pessoa;
+import br.edu.ifpb.infinitiGraphexample.entidades.ChatDeBatePapo;
+import br.edu.ifpb.infinitiGraphexample.entidades.MensagemPrivada;
+import br.edu.ifpb.infinitiGraphexample.entidades.Pessoa;
 
 public class GrafoDAO {
 

@@ -1,4 +1,4 @@
-package infinitiGraphexample.entidades;
+package br.edu.ifpb.infinitiGraphexample.entidades;
 
 public class Membro extends Pessoa{
 
