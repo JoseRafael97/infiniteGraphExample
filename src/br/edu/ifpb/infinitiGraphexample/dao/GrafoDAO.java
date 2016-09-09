@@ -258,7 +258,7 @@ public class GrafoDAO {
 	public void buscarPessoasLigadasDiretamenteLogger(Pessoa pessoa) {
 		PrintResultHandler printResults = new PrintResultHandler();
 
-		VertexPredicate myVertexPred = new VertexPredicate(grafo.getTypeId(Pessoa.class.getName()), "nome=~'Rafael3'");
+		VertexPredicate myVertexPred = new VertexPredicate(grafo.getTypeId(Pessoa.class.getName()), "nome=~'"+pessoa.getNome()+"'");
 
 		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, myVertexPred, null,
 				printResults);
@@ -284,6 +284,7 @@ public class GrafoDAO {
 		
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
+		
 		}finally{
 		   if (stream != null)
 		   {

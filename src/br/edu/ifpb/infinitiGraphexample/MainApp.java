@@ -6,6 +6,7 @@ import com.infinitegraph.ConfigurationException;
 import com.infinitegraph.StorageException;
 import br.edu.ifpb.infinitiGraphexample.dao.GrafoDAO;
 import br.edu.ifpb.infinitiGraphexample.dao.InfinitiGraphFactory;
+import br.edu.ifpb.infinitiGraphexample.entidades.ChatDeBatePapo;
 import br.edu.ifpb.infinitiGraphexample.entidades.Membro;
 import br.edu.ifpb.infinitiGraphexample.entidades.MensagemPrivada;
 
@@ -38,6 +39,11 @@ public class MainApp {
 		MensagemPrivada mensagemPrivada4 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
 				"Não, é uma merda!", Calendar.getInstance());
 
+		MensagemPrivada mensagemPrivada5 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
+				"Não, é uma merda!", Calendar.getInstance());
+		
+		ChatDeBatePapo chatDeBatePapo  = new ChatDeBatePapo("Chart iniciado", 500, Calendar.getInstance());
+
 		try {
 
 			GrafoDAO dao = new GrafoDAO();
@@ -63,6 +69,8 @@ public class MainApp {
 			dao.adicionaPessoa(me5);
 
 			System.out.println("CRIADO PESSOA 5");
+			
+			dao.adicionarConexaoCharUnidericional(me4, me5, chatDeBatePapo);
 
 			dao.adicionarConexaoMensagemUnidericional(me1, me2, mensagemPrivada);
 
@@ -71,6 +79,8 @@ public class MainApp {
 			dao.adicionarConexaoMensagemBidericional(me1, me4, mensagemPrivada2);
 
 			dao.adicionarConexaoMensagemBidericional(me4, me5, mensagemPrivada4);
+			
+			dao.adicionarConexaoMensagemBidericional(me3, me5,mensagemPrivada5);
 
 			// dao.adicionarConexaoMensagemBidericional(me3, me5,
 			// mensagemPrivada);
