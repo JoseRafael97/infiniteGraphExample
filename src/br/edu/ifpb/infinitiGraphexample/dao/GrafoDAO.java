@@ -16,14 +16,19 @@ import com.infinitegraph.Transaction;
 import com.infinitegraph.Vertex;
 import com.infinitegraph.navigation.Guide;
 import com.infinitegraph.navigation.Navigator;
+import com.infinitegraph.navigation.Path;
 import com.infinitegraph.navigation.Qualifier;
 import com.infinitegraph.navigation.handlers.JSONOutputResultHandler;
+import com.infinitegraph.navigation.handlers.PathCollector;
 import com.infinitegraph.navigation.handlers.PrintResultHandler;
+import com.infinitegraph.navigation.qualifiers.EdgeTypes;
+import com.infinitegraph.navigation.qualifiers.VertexIdentifier;
 import com.infinitegraph.navigation.qualifiers.VertexPredicate;
 
 import br.edu.ifpb.infinitiGraphexample.entidades.ChatDeBatePapo;
 import br.edu.ifpb.infinitiGraphexample.entidades.MensagemPrivada;
 import br.edu.ifpb.infinitiGraphexample.entidades.Pessoa;
+import br.edu.ifpb.infinitiGraphexample.entidades.SuperAresta;
 
 public class GrafoDAO {
 
@@ -255,49 +260,120 @@ public class GrafoDAO {
 	 * 
 	 * @param pessoa
 	 */
-	public void buscarPessoasLigadasDiretamenteLogger(Pessoa pessoa) {
+	public void buscarPessoasLigadasDiretamenteOuIndiretamenteLogger(Pessoa pessoa) {
 		PrintResultHandler printResults = new PrintResultHandler();
 
-		VertexPredicate myVertexPred = new VertexPredicate(grafo.getTypeId(Pessoa.class.getName()), "nome=~'"+pessoa.getNome()+"'");
+		VertexPredicate myVertexPred = new VertexPredicate(grafo.getTypeId(Pessoa.class.getName()),
+				"nome=~'" + pessoa.getNome() + "'");
 
 		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, myVertexPred, null,
 				printResults);
 
-		myNavigator.start();
+		myNavigator.getResultHandler();
 
 	}
 
 	/**
-	 * Busca pessoas ligada a pessoas passada 
+	 * Busca pessoas ligada a pessoas passada
+	 * 
 	 * @param pessoa
-	 * @throws FileNotFoundException 
 	 */
-	public void buscarPessoasLigadasDiretamenteJSON(Pessoa pessoa) {
-		FileOutputStream stream = null;
-		try 
-		{  
-		   stream = new FileOutputStream("consultas/json.txt");  
-		   JSONOutputResultHandler json = new JSONOutputResultHandler(stream); 
+	public List<Pessoa> buscarPessoasLigadasOuIndiretamentellection(Pessoa pessoa) {
 
-		   Navigator navigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY, null, json);
-		   navigator.start();
-		
-		}catch(FileNotFoundException e){
-			e.printStackTrace();
-		
-		}finally{
-		   if (stream != null)
-		   {
-		       try
-		       {
-		           stream.close();
-		       }
-		       catch(Exception e){}
-		   } 
-		        
+		PathCollector resultPaths = new PathCollector();
+
+		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY,
+				null, resultPaths);
+
+		myNavigator.start();
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+
+		for (Path path : resultPaths.getPaths()) {
+			pessoas.add((Pessoa) path.getFinalHop().getVertex());
+			// Perform operation on result path, for example:
+			// logger.info("Preceding edge:" +
+			// path.getFinalHop().getEdge().getClass().getName());
 		}
-	
+		return pessoas;
 	}
+
+	/**
+	 * Busca pessoas ligada a pessoas passada
+	 * 
+	 * @param pessoa
+	 * @throws FileNotFoundException
+	 */
+	public void buscarPessoasLigadasDiretamenteOuIndiretamenteJSON(Pessoa pessoa) {
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream("consultas/json.txt");
+			JSONOutputResultHandler json = new JSONOutputResultHandler(stream);
+
+			Navigator navigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY,
+					null, json);
+			navigator.start();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+		} finally {
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
+
+		}
+
+	}
+
+	/**
+	 * Método que busca as mensagens enviadas pela pessoa1 para pessoa 2
+	 * 
+	 * @return
+	 */
+	public List<SuperAresta> mensagemTrocadaDaEntreDuasPessoas(Pessoa pessoa, Pessoa pessoa2) {
+
+		PathCollector resultPaths = new PathCollector();
+
+		EdgeTypes myEdgeTypes = new EdgeTypes(grafo.getTypeId(MensagemPrivada.class.getName()));
+		VertexIdentifier myDanaVertex = new VertexIdentifier(pessoa);
+
+		Navigator myNavigator = pessoa2.navigate(null, null, myEdgeTypes, myDanaVertex, null, resultPaths);
+
+		myNavigator.start();
+		List<SuperAresta> chatsDeBatePapo = new ArrayList<SuperAresta>();
+
+		for (Path path : resultPaths.getPaths()) {
+			chatsDeBatePapo.add((SuperAresta) path.getFinalHop().getEdge());
+		}
+		return chatsDeBatePapo;
+	}
+	
+	
+
+	/**
+	 * Busca pessoas ligada a pessoas passada
+	 * 
+	 * @param pessoa
+	 */
+	public List<Pessoa> buscarPessoasLigadasCollection(Pessoa pessoa) {
+
+		PathCollector resultPaths = new PathCollector();
+
+		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY,
+				null, resultPaths);
+
+		myNavigator.start();
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+
+		for (Path path : resultPaths.getPaths()) {
+			pessoas.add((Pessoa) path.getFinalHop().getVertex());
+		}
+		return pessoas;
+	}
+
 
 	/**
 	 * Fecha a trasação e faz commit e fecha o banco grafo

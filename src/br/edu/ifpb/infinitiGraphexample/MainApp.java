@@ -42,6 +42,10 @@ public class MainApp {
 		MensagemPrivada mensagemPrivada5 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
 				"Não, é uma merda!", Calendar.getInstance());
 		
+		
+		MensagemPrivada mensagemPrivada6 = new MensagemPrivada("E AI BROW?",
+				"Não, é uma merda!", Calendar.getInstance());
+		
 		ChatDeBatePapo chatDeBatePapo  = new ChatDeBatePapo("Chart iniciado", 500, Calendar.getInstance());
 
 		try {
@@ -73,6 +77,9 @@ public class MainApp {
 			dao.adicionarConexaoCharUnidericional(me4, me5, chatDeBatePapo);
 
 			dao.adicionarConexaoMensagemUnidericional(me1, me2, mensagemPrivada);
+			
+			dao.adicionarConexaoMensagemUnidericional(me1, me2, mensagemPrivada6);
+
 
 			dao.adicionarConexaoMensagemUnidericional(me1, me3, mensagemPrivad3);
 
@@ -93,17 +100,20 @@ public class MainApp {
 
 			System.out.println("COLOCADO PESSOA 1 COMO NÓ ROOT");
 
-			System.out.println(dao.buscarPorNome(me2.getNome()));
+			//System.out.println(dao.buscarPorNome(me2.getNome()));
+			
 
-			System.out.println("TESTE?");
+			//System.out.println("TESTE?");
 
 			// VertexPredicate myVertexPred = new
 			// VertexPredicate(InfinitiGraphFactory.getGraph().getTypeId(Pessoa.class.getName()),
 			// "name=='Rafael4'");
 
-			dao.buscarPessoasLigadasDiretamenteJSON(me1);
+			//System.out.println(dao.buscarPessoasLigadasDiretamenteCollection(me1));
 
-			System.out.println(dao.buscarTodos());
+			//System.out.println(dao.buscarTodos());
+			
+			System.out.println(dao.mensagemTrocadaDaEntreDuasPessoas(me3, me2));
 
 			dao.fecharConexao();
 
