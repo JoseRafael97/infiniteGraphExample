@@ -68,6 +68,8 @@ public class MainCriaGrafoApp {
 		
 		//Adicionar Nó Raiz
 		dao.colocarNoComoRaiz(me1);
+		dao.colocarNoComoRaiz(me4);
+
 		
 		System.out.println("Operações Realizadas com Sucesso!");
 		
