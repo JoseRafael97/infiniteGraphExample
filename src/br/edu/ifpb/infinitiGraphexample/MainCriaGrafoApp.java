@@ -15,7 +15,7 @@ public class MainCriaGrafoApp {
 	public static void main(String[] args) throws StorageException, ConfigurationException {
 	
 		InfinitiGraphFactory.deleteGrafo();
-		// InfinitiGraphFactory.criarDataBase();
+		InfinitiGraphFactory.criarDataBase();
 		
 		GrafoDAO dao = new GrafoDAO();
 
