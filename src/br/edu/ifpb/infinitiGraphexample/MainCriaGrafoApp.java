@@ -46,24 +46,24 @@ public class MainCriaGrafoApp {
 		ChatDeBatePapo chatDeBatePapo = new ChatDeBatePapo("Chart iniciado", 500, Calendar.getInstance());
 		dao.adicionarConexaoCharUnidericional(me1, me2, chatDeBatePapo);
 
-		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "Não",
+		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá Cara, Só curtindo as férias ?", "Só assistindo",
 				Calendar.getInstance());
 		dao.adicionarConexaoMensagemUnidericional(me1, me2, mensagemPrivada);
 
-		MensagemPrivada mensagemPrivada2 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "SIM",
+		MensagemPrivada mensagemPrivada2 = new MensagemPrivada("E ai truta e paradas?", "Ta tudo tranquilo, ta favorável",
 				Calendar.getInstance());
 		dao.adicionarConexaoMensagemBidericional(me1, me4, mensagemPrivada2);
 
-		MensagemPrivada mensagemPrivada3 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
-				"Não, é uma merda!", Calendar.getInstance());
+		MensagemPrivada mensagemPrivada3 = new MensagemPrivada("Caramba como ta ?",
+				"Porra, não to bem", Calendar.getInstance());
 		dao.adicionarConexaoMensagemUnidericional(me1, me3, mensagemPrivada3);
 
-		MensagemPrivada mensagemPrivada4 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
-				"Não, é uma merda!", Calendar.getInstance());
+		MensagemPrivada mensagemPrivada4 = new MensagemPrivada("Banco de dados vai passar?",
+				"Depende disso kk!", Calendar.getInstance());
 		dao.adicionarConexaoMensagemBidericional(me4, me5, mensagemPrivada4);
 
-		MensagemPrivada mensagemPrivada5 = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?",
-				"Não, é uma merda!", Calendar.getInstance());
+		MensagemPrivada mensagemPrivada5 = new MensagemPrivada("Mano doido",
+				"Vai...", Calendar.getInstance());
 		dao.adicionarConexaoMensagemUnidericional(me4, me1, mensagemPrivada5);
 		
 		//Adicionar Nó Raiz

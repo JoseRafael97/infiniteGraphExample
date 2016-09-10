@@ -21,5 +21,12 @@ public class MensagemPrivada extends SuperAresta{
 		this.respostaMsg = respostaMsg;
 	}
 
+	@Override
+	public String toString() {
+		return "MensagemPrivada [respostaMsg=" + respostaMsg + "]";
+	}
+	
+	
+
 	
 }

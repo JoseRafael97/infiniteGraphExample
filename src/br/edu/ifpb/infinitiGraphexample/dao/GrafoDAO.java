@@ -127,6 +127,22 @@ public class GrafoDAO {
 	}
 
 	/**
+	 * Remove um vértice 
+	 * @param p1
+	 * @throws StorageException
+	 * @throws ConfigurationException
+	 */
+	public void remover(Pessoa p1) throws StorageException, ConfigurationException {
+		try {
+			grafo.removeVertex(p1);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.tx.rollback();
+		}
+	}
+
+	/**
 	 * Método utilizado pelo método de criar conexao unidirecional e
 	 * bidirecional
 	 * 
@@ -349,8 +365,6 @@ public class GrafoDAO {
 		}
 		return chatsDeBatePapo;
 	}
-	
-	
 
 	/**
 	 * Busca pessoas ligada a pessoas passada
@@ -372,7 +386,6 @@ public class GrafoDAO {
 		}
 		return pessoas;
 	}
-
 
 	/**
 	 * Fecha a trasação e faz commit e fecha o banco grafo
