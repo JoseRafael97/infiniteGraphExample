@@ -44,11 +44,10 @@ public class GrafoDAO {
 	 */
 	public void iniciarTransacao() throws StorageException, ConfigurationException {
 		try {
-			InfinitiGraphFactory.criarDataBase();
 			grafo = InfinitiGraphFactory.getGraph();
 			System.out.println("____ GRAFO CRIADO ___");
 		} catch (StorageException e) {
-			InfinitiGraphFactory.criarDataBase();
+			e.printStackTrace();
 		} catch (ConfigurationException e) {
 
 			e.printStackTrace();

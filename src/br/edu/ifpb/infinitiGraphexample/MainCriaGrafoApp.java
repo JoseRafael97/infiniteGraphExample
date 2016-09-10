@@ -44,7 +44,7 @@ public class MainCriaGrafoApp {
 		// Operações com membros criados.
 
 		ChatDeBatePapo chatDeBatePapo = new ChatDeBatePapo("Chart iniciado", 500, Calendar.getInstance());
-		dao.adicionarConexaoCharUnidericional(me4, me5, chatDeBatePapo);
+		dao.adicionarConexaoCharUnidericional(me1, me2, chatDeBatePapo);
 
 		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá Conseguiu rodar o InfiniteGraph?", "Não",
 				Calendar.getInstance());
@@ -72,5 +72,6 @@ public class MainCriaGrafoApp {
 		System.out.println("Operações Realizadas com Sucesso!");
 		
 
+		dao.fecharConexao();
 	}
 }
