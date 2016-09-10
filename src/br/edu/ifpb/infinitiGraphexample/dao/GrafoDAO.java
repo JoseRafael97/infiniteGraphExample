@@ -181,7 +181,7 @@ public class GrafoDAO {
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
-	public void adicionarConexaoCharUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
+	public void adicionarConexaoChatUnidericional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
 			throws StorageException, ConfigurationException {
 		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.OUTGOING);
 
@@ -198,7 +198,7 @@ public class GrafoDAO {
 	 * @throws StorageException
 	 * @throws ConfigurationException
 	 */
-	public void adicionarConexaoCharBiderecional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
+	public void adicionarConexaoChatBiderecional(Pessoa p1, Pessoa p2, ChatDeBatePapo chat)
 			throws StorageException, ConfigurationException {
 		adicionarConexaoChat(p1, p2, chat, AccessMode.READ_WRITE, EdgeKind.BIDIRECTIONAL);
 	}

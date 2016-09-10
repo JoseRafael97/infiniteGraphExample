@@ -44,7 +44,7 @@ public class MainCriaGrafoApp {
 		// Operações com membros criados.
 
 		ChatDeBatePapo chatDeBatePapo = new ChatDeBatePapo("Chart iniciado", 500, Calendar.getInstance());
-		dao.adicionarConexaoCharUnidericional(me1, me2, chatDeBatePapo);
+		dao.adicionarConexaoChatUnidericional(me1, me2, chatDeBatePapo);
 
 		MensagemPrivada mensagemPrivada = new MensagemPrivada("Olá Cara, Só curtindo as férias ?", "Só assistindo",
 				Calendar.getInstance());
