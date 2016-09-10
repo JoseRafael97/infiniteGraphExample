@@ -26,6 +26,7 @@ import com.infinitegraph.navigation.qualifiers.VertexIdentifier;
 import com.infinitegraph.navigation.qualifiers.VertexPredicate;
 
 import br.edu.ifpb.infinitiGraphexample.entidades.ChatDeBatePapo;
+import br.edu.ifpb.infinitiGraphexample.entidades.Membro;
 import br.edu.ifpb.infinitiGraphexample.entidades.MensagemPrivada;
 import br.edu.ifpb.infinitiGraphexample.entidades.Pessoa;
 import br.edu.ifpb.infinitiGraphexample.entidades.SuperAresta;
@@ -368,17 +369,19 @@ public class GrafoDAO {
 		return chatsDeBatePapo;
 	}
 
+	
 	/**
-	 * Busca pessoas ligada a pessoas passada
+	 * Busca todos os membros que tem relação direta com aresta com pessoa passada
 	 * 
-	 * @param pessoa
+	 * @return
 	 */
-	public List<Pessoa> buscarPessoasLigadasCollection(Pessoa pessoa) {
+	public List<Pessoa> buscarPessoasLigadasDiretamentePorArestas(Pessoa pessoa) {
 
 		PathCollector resultPaths = new PathCollector();
 
-		Navigator myNavigator = pessoa.navigate(null, Guide.SIMPLE_BREADTH_FIRST, Qualifier.FOREVER, Qualifier.ANY,
-				null, resultPaths);
+		EdgeTypes myEdgeTypes = new EdgeTypes(grafo.getTypeId(Membro.class.getName()));
+
+		Navigator myNavigator = pessoa.navigate(null, null, myEdgeTypes, null, null, resultPaths);
 
 		myNavigator.start();
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
@@ -388,6 +391,7 @@ public class GrafoDAO {
 		}
 		return pessoas;
 	}
+
 
 	/**
 	 * Fecha a trasação e faz commit e fecha o banco grafo
