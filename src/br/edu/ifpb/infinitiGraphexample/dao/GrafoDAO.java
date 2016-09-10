@@ -308,9 +308,6 @@ public class GrafoDAO {
 
 		for (Path path : resultPaths.getPaths()) {
 			pessoas.add((Pessoa) path.getFinalHop().getVertex());
-			// Perform operation on result path, for example:
-			// logger.info("Preceding edge:" +
-			// path.getFinalHop().getEdge().getClass().getName());
 		}
 		return pessoas;
 	}
